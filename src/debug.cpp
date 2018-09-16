@@ -1,4 +1,4 @@
-#include "debug.hpp"
+#include "debug.h"
 #include "globals.h"
 RemoteDebug Debug;
 

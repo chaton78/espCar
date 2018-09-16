@@ -1,7 +1,7 @@
 #include "globals.h"
 #include "config.h"
-const char *ssid = SSID;
-const char *password = PASSWORD;
+const char *ssid = AP_SSID;
+const char *password = AP_PASSWORD;
 const char apn[] = "hologram";
 const char user[] = "";
 const char pass[] = "";

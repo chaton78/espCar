@@ -42,8 +42,8 @@
 // For a connection via I2C using Wire include
 #include <Wire.h>    // Only needed for Arduino 1.6.5 and earlier
 #include "SSD1306.h" // alias for `#include "SSD1306Wire.h"`
-#include "debug.hpp"
-#include "gps.hpp"
+#include "debug.h"
+#include "gps.h"
 #include "globals.h"
 // Include the UI lib
 #include "OLEDDisplayUi.h"
@@ -203,13 +203,10 @@ void IRAM_ATTR onTimer()
 
 void setup()
 {
-    WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
+    //WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
     Serial.begin(115200, SERIAL_8N1);
     Serial.println();
     SerialAT.begin(115200, SERIAL_8N1, 16, 17, false);
-
-    delay(0);
-
     WiFi.begin(ssid, password);
 
     // Wait for connection
@@ -345,7 +342,7 @@ void loop()
 {
     ArduinoOTA.handle();
     handleDebug();
-
+    handleGPS();
 
 
     // read from port 0, send to port 1:
@@ -365,7 +362,7 @@ void loop()
         Debug.println(" ms");
         bme.takeForcedMeasurement(); // has no effect in normal mode
         printValues();
-        handleGPS();
+        displayInfo();
     }
 
     //bool gpsRead = false;
@@ -431,5 +428,5 @@ void loop()
         Debug.println(F("GPRS disconnected"));
         done = true;
     }*/
-    delay(500);
+    //delay(500);
 }
