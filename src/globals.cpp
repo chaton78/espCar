@@ -1,9 +1,10 @@
 #include "globals.h"
 #include "config.h"
-const char *ssid = AP_SSID;
-const char *password = AP_PASSWORD;
-const char apn[] = "hologram";
+const char apn[] = APN;
 const char user[] = "";
 const char pass[] = "";
-const char server[] = "vsh.pp.ua";
+const char server[] = "158.69.201.42";
 const char resource[] = "/TinyGSM/logo.txt";
+BluetoothSerial SerialBT;
+WiFiUDP udp;
+hw_timer_t *timer = NULL;

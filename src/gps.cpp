@@ -16,19 +16,29 @@ uint32_t _lastTimeSend = 0;   // Last time command send data
 void initGPS()
 {
     SerialGPS.begin(115200, SERIAL_8N1, 33, 35);
-    gpsServer.begin(GPS_PORT);
-    gpsServer.setNoDelay(true);
     _bufferSend.reserve(MAX_SIZE_SEND);
 }
+void initGPSServer()
+{
 
-void handleGPS() {
+    gpsServer.begin(GPS_PORT);
+    gpsServer.setNoDelay(true);
+
+}
+String geoHash(){
+    String geoHash = hasher.encode(gps.location.lat(), gps.location.lng());
+    geoHash.concat(F(" "));
+    geoHash.concat(gps.speed.kmph());
+    geoHash.concat(F(" "));
+    geoHash.concat(gps.hdop.hdop());
+    return geoHash;
+}
+void handleGPS()
+{
     if (gpsServer.hasClient())
     {
-
-
         if (gpsClient && gpsClient.connected())
         {
-
             // Verify if the IP is same than actual conection
 
             WiFiClient newClient;
@@ -78,7 +88,7 @@ void handleGPS() {
     // Is client connected ? (to reduce overhead in active)
     bool _connected = (gpsClient && gpsClient.connected());
 
-     while (SerialGPS.available() && _sizeBufferSend< MAX_SIZE_SEND)
+     while (SerialGPS.available() && _sizeBufferSend < MAX_SIZE_SEND)
     {
         int byte = SerialGPS.read();
         gps.encode(byte);
@@ -92,20 +102,21 @@ void handleGPS() {
     {
         gpsClient.print(_bufferSend);
     }
-    else
+   /* else
     {
-        Serial.print(_bufferSend);
-    }
+        if (SerialBT.hasClient()) {
+            SerialBT.print(_bufferSend);
+        }
+    }*/
     
     _bufferSend = "";
     _sizeBufferSend = 0;
     _lastTimeSend = millis();
-    
 
-    while (!_connected && Serial.available())
+   /* while (!_connected && SerialBT.available())
     {
-        SerialGPS.write(Serial.read());
-    }
+        SerialGPS.write(SerialBT.read());
+    }*/
     
     while (_connected && gpsClient.available())
     {
@@ -121,11 +132,8 @@ void displayInfo()
         Debug.print(gps.location.lat(), 6);
         Debug.print(F(","));
         Debug.print(gps.location.lng(), 6);
-        Debug.printf(" GeoHash: %s", hasher.encode(gps.location.lat(), gps.location.lng()));
         Debug.print(F(","));
-        Debug.print(gps.speed.kmph(),1);
-        Debug.print(F(","));
-        Debug.print(gps.hdop.hdop(), 1);
+        Debug.print(geoHash());
     }
     else
     {
